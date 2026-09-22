@@ -1,0 +1,17 @@
+{
+  "name": "MaxDis Timer",
+  "short_name": "MaxDis Timer",
+  "description": "Timer MaxDisplay untuk pekerjaan toko",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f5f7fa",
+  "theme_color": "#168de2",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

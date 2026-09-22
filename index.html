@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f7fa">
+  <title>MaxDis Timer</title>
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+  background: #f5f7fa;
+  color: #20252b;
+  min-height: 100vh;
+
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease;
+}
+
+    button,
+    input {
+      font-family: inherit;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 22px 16px 40px;
+    }
+
+    .header {
+      margin-bottom: 13px;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 750;
+      letter-spacing: -0.5px;
+      text-align: left;
+    }
+
+    .title span {
+      color: #168de2;
+    }
+
+    .subtitle {
+      margin-top: 5px;
+      color: #7b858f;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .progress-section {
+      background: #ffffff;
+      border: 1px solid #e5e9ee;
+      border-radius: 16px;
+      padding: 11px 13px;
+      margin-bottom: 10px;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 9px;
+    }
+
+    .progress-label {
+      font-size: 13px;
+      font-weight: 650;
+      color: #4d5761;
+    }
+
+    .progress-count {
+      font-size: 13px;
+      font-weight: 700;
+      color: #168de2;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 7px;
+      background: #e9edf1;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #168de2;
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    .lorong-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .lorong-card {
+      background: #ffffff;
+      border: 1px solid #e3e7eb;
+      border-radius: 13px;
+      padding: 9px 11px;
+      transition:
+        border-color 0.25s ease,
+        opacity 0.25s ease;
+    }
+
+    .lorong-card.active {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(
+  120deg,
+  #168de2,
+  #111111,
+  #168de2,
+  #111111,
+  #168de2
+) border-box;
+  background-size: 100% 100%, 300% 300%;
+  animation: movingBorder 4s linear infinite;
+}
+
+@keyframes movingBorder {
+  0% {
+    background-position: 0 0, 0% 50%;
+  }
+
+  50% {
+    background-position: 0 0, 100% 50%;
+  }
+
+  100% {
+    background-position: 0 0, 0% 50%;
+  }
+}
+
+    .lorong-card.locked {
+      opacity: 0.55;
+    }
+
+    .lorong-card.done {
+      border-color: #b8dfc7;
+    }
+
+    .lorong-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+
+    .lorong-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .status {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #edf5fb;
+      color: #168de2;
+    }
+
+    .status.locked {
+      background: #f0f1f3;
+      color: #9299a1;
+    }
+
+    .status.done {
+      background: #eaf7ee;
+      color: #36965a;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 9px;
+      align-items: stretch;
+    }
+
+    .qty-input {
+      flex: 1;
+      min-width: 0;
+
+      border: 1px solid #d9dfe5;
+      background: #fafbfc;
+      color: #20252b;
+
+      border-radius: 9px;
+      padding: 8px 10px;
+
+      font-size: 14px;
+      font-weight: 600;
+
+      outline: none;
+
+      transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .qty-input:focus {
+      border-color: #168de2;
+      background: #ffffff;
+    }
+
+    .qty-input:disabled {
+      cursor: not-allowed;
+      background: #f2f3f5;
+    }
+
+    .start-btn {
+      border: none;
+      background: #168de2;
+      color: #ffffff;
+
+      border-radius: 9px;
+      padding: 0 15px;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        background 0.2s ease,
+        opacity 0.2s ease;
+    }
+
+    .start-btn:active {
+      opacity: 0.8;
+    }
+
+    .start-btn:disabled {
+      background: #cdd3d9;
+      cursor: not-allowed;
+    }
+
+    .estimate {
+      margin-top: 5px;
+      font-size: 12px;
+      color: #858e97;
+      font-weight: 500;
+    }
+
+    .estimate strong {
+      color: #4c5660;
+    }
+
+    /* TIMER POPUP */
+
+    .timer-overlay {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 18px;
+
+      background: rgba(24, 29, 35, 0.45);
+      backdrop-filter: blur(5px);
+
+      z-index: 1000;
+    }
+
+    .timer-overlay.show {
+      display: flex;
+    }
+
+    .timer-popup {
+      width: 100%;
+      max-width: 380px;
+
+      background: #ffffff;
+      border-radius: 21px;
+
+      padding: 25px 20px 20px;
+
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+    }
+
+    .timer-lorong {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #68727c;
+      margin-bottom: 7px;
+    }
+
+    .timer-qty {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 550;
+      color: #9aa2aa;
+      margin-bottom: 17px;
+    }
+
+    .countdown {
+      text-align: center;
+
+      font-size: clamp(65px, 18vw, 95px);
+      line-height: 1;
+
+      font-weight: 750;
+      letter-spacing: -3px;
+
+      color: #168de2;
+
+      font-variant-numeric: tabular-nums;
+
+      /* Angka tidak bergerak */
+      transition: color 1.2s ease;
+    }
+
+    .countdown.warning-orange {
+      color: #f39a32;
+    }
+
+    .countdown.warning-red {
+      color: #e85d5d;
+    }
+
+    .timer-progress {
+      width: 100%;
+      height: 7px;
+
+      background: #edf0f2;
+
+      border-radius: 999px;
+      overflow: hidden;
+
+      margin-top: 22px;
+    }
+
+    .timer-progress-fill {
+      width: 100%;
+      height: 100%;
+
+      background: #168de2;
+
+      border-radius: 999px;
+
+      transition:
+        width 0.25s linear,
+        background-color 1.2s ease;
+    }
+
+    .timer-progress-fill.warning-orange {
+      background: #f39a32;
+    }
+
+    .timer-progress-fill.warning-red {
+      background: #e85d5d;
+    }
+    
+        /* =========================
+       TIMER BUTTONS
+    ========================= */
+
+    .timer-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .timer-btn {
+      flex: 1;
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+
+      font-size: 14px;
+      font-weight: 700;
+
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .timer-btn:active {
+      opacity: 0.75;
+    }
+
+    .pause-btn {
+      background: #eef1f4;
+      color: #4f5963;
+    }
+
+    .done-btn {
+      background: #168de2;
+      color: #ffffff;
+    }
+
+    /* =========================
+       FINISH SCREEN
+    ========================= */
+
+    .finish-screen {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 18px;
+
+      background: rgba(24, 29, 35, 0.45);
+      backdrop-filter: blur(5px);
+
+      z-index: 1100;
+    }
+
+    .finish-screen.show {
+      display: flex;
+    }
+
+    .finish-popup {
+      width: 100%;
+      max-width: 380px;
+
+      background: #ffffff;
+      border-radius: 21px;
+
+      padding: 28px 20px 20px;
+
+      text-align: center;
+
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.16);
+    }
+
+    .finish-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .finish-title {
+      font-size: 21px;
+      font-weight: 750;
+      color: #20252b;
+    }
+
+    .finish-message {
+      margin-top: 9px;
+
+      font-size: 13px;
+      line-height: 1.5;
+
+      color: #7c858e;
+    }
+
+    .new-session-btn {
+      width: 100%;
+
+      margin-top: 20px;
+
+      border: none;
+      border-radius: 12px;
+
+      padding: 13px;
+
+      background: #168de2;
+      color: #ffffff;
+
+      font-size: 14px;
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    .toast {
+      position: fixed;
+
+      left: 50%;
+      bottom: 24px;
+
+      transform: translateX(-50%) translateY(20px);
+
+      width: calc(100% - 32px);
+      max-width: 430px;
+
+      padding: 12px 15px;
+
+      background: #20252b;
+      color: #ffffff;
+
+      border-radius: 12px;
+
+      font-size: 13px;
+      font-weight: 600;
+
+      text-align: center;
+
+      opacity: 0;
+      visibility: hidden;
+
+      transition:
+        opacity 0.25s ease,
+        transform 0.25s ease,
+        visibility 0.25s ease;
+
+      z-index: 1200;
+    }
+
+    .toast.show {
+      opacity: 1;
+      visibility: visible;
+
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 380px) {
+      .app {
+        padding-left: 13px;
+        padding-right: 13px;
+      }
+
+      .lorong-card {
+        padding: 13px;
+      }
+
+      .start-btn {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .countdown {
+        font-size: 64px;
+      }
+    }
+    /* DARK MODE */
+
+.theme-btn {
+  position: absolute;
+  top: 20px;
+  right: 16px;
+
+  width: 40px;
+  height: 40px;
+
+  border: 1px solid #e1e6eb;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #4d5761;
+
+  font-size: 18px;
+
+  cursor: pointer;
+}
+
+.header {
+  position: relative;
+}
+
+/* DARK THEME */
+
+body.dark {
+  background: #171a1e;
+  color: #f1f3f5;
+}
+
+body.dark .theme-btn {
+  background: #22272d;
+  border-color: #30363d;
+  color: #f5c84c;
+}
+
+body.dark .subtitle {
+  color: #929aa3;
+}
+
+body.dark .progress-section,
+body.dark .lorong-card,
+body.dark .timer-popup,
+body.dark .finish-popup {
+  background: #20252b;
+  border-color: #30363d;
+}
+
+body.dark .progress-label,
+body.dark .lorong-name {
+  color: #f1f3f5;
+}
+
+body.dark .lorong-card.active {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#20252b, #20252b) padding-box,
+    linear-gradient(
+      120deg,
+      #168de2,
+      #ffffff,
+      #168de2,
+      #ffffff,
+      #168de2
+    ) border-box;
+  background-size: 100% 100%, 300% 300%;
+  animation: movingBorder 4s linear infinite;
+}
+
+body.dark .progress-bar {
+  background: #30363d;
+}
+
+body.dark .qty-input {
+  background: #191d21;
+  border-color: #363d45;
+  color: #f1f3f5;
+}
+
+body.dark .qty-input:focus {
+  background: #20252b;
+  border-color: #168de2;
+}
+
+body.dark .qty-input:disabled {
+  background: #292e34;
+}
+
+body.dark .estimate {
+  color: #858e97;
+}
+
+body.dark .estimate strong {
+  color: #b8c0c8;
+}
+
+body.dark .status.locked {
+  background: #2b3036;
+  color: #858d96;
+}
+
+body.dark .pause-btn {
+  background: #30363d;
+  color: #d9dee3;
+}
+
+body.dark .timer-qty {
+  color: #929aa3;
+}
+
+body.dark .timer-progress {
+  background: #30363d;
+}
+
+body.dark .finish-title {
+  color: #f1f3f5;
+}
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <!-- HEADER -->
+
+    <header class="header">
+      <div class="title">
+        <span>MaxDis</span> Timer
+      </div>
+
+      <div class="subtitle">
+        Rumus 12 Pcs = 1 Menit
+      </div>
+      
+      <button class="theme-btn" id="themeBtn" type="button">
+  🌙
+</button>
+
+
+    <!-- PROGRESS -->
+
+    <section class="progress-section">
+
+      <div class="progress-top">
+        <div class="progress-label">
+          Progress Lorong
+        </div>
+
+        <div class="progress-count" id="progressCount">
+          0/6
+        </div>
+      </div>
+
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          id="progressFill">
+        </div>
+      </div>
+
+    </section>
+
+
+    <!-- LORONG -->
+
+    <section
+      class="lorong-list"
+      id="lorongList">
+    </section>
+
+  </main>
+
+
+  <!-- =========================
+       TIMER POPUP
+  ========================= -->
+
+  <div
+    class="timer-overlay"
+    id="timerOverlay">
+
+    <div class="timer-popup">
+
+      <div
+        class="timer-lorong"
+        id="timerLorong">
+        Lorong 1
+      </div>
+
+      <div
+        class="timer-qty"
+        id="timerQty">
+        0 Pcs
+      </div>
+
+      <div
+        class="countdown"
+        id="countdown">
+        00:00
+      </div>
+
+      <div class="timer-progress">
+
+        <div
+          class="timer-progress-fill"
+          id="timerProgressFill">
+        </div>
+
+      </div>
+
+      <div class="timer-buttons">
+
+        <button
+          class="timer-btn pause-btn"
+          id="pauseBtn">
+          Pause
+        </button>
+
+        <button
+          class="timer-btn done-btn"
+          id="doneBtn"
+          style="display: none;">
+          DONE
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       FINISH POPUP
+  ========================= -->
+
+  <div
+    class="finish-screen"
+    id="finishScreen">
+
+    <div class="finish-popup">
+
+      <div class="finish-icon">
+        🎉
+      </div>
+
+      <div class="finish-title">
+        SEMUA LORONG SELESAI!
+      </div>
+
+      <div
+        class="finish-message"
+        id="finishMessage">
+        Mantap! Semua lorong sudah selesai.
+      </div>
+
+      <button
+        class="new-session-btn"
+        id="newSessionBtn">
+        MULAI SESI BARU
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       TOAST
+  ========================= -->
+
+  <div
+    class="toast"
+    id="toast">
+  </div>
+  
+    <script>
+    /* =========================
+       DATA & TIMER STATE
+    ========================= */
+
+    const TOTAL_LORONG = 6;
+    const SECONDS_PER_PCS = 5;
+
+    const lorongs = Array.from(
+      { length: TOTAL_LORONG },
+      () => ({
+        qty: "",
+        done: false
+      })
+    );
+
+    let activeLorong = null;
+    let timer = null;
+
+    let remainingSeconds = 0;
+    let totalTimerSeconds = 0;
+    let endTimestamp = null;
+
+    let paused = false;
+    let pauseRemaining = 0;
+
+    let lastWarningSecond = null;
+
+    let wakeLock = null;
+
+
+    /* =========================
+       ELEMENT
+    ========================= */
+
+    const lorongList =
+      document.getElementById("lorongList");
+
+    const progressCount =
+      document.getElementById("progressCount");
+
+    const progressFill =
+      document.getElementById("progressFill");
+
+    const timerOverlay =
+      document.getElementById("timerOverlay");
+
+    const timerLorong =
+      document.getElementById("timerLorong");
+
+    const timerQty =
+      document.getElementById("timerQty");
+
+    const countdown =
+      document.getElementById("countdown");
+
+    const timerProgressFill =
+      document.getElementById("timerProgressFill");
+
+    const pauseBtn =
+      document.getElementById("pauseBtn");
+
+    const doneBtn =
+      document.getElementById("doneBtn");
+
+    const finishScreen =
+      document.getElementById("finishScreen");
+
+    const finishMessage =
+      document.getElementById("finishMessage");
+
+    const newSessionBtn =
+      document.getElementById("newSessionBtn");
+
+    const toast =
+      document.getElementById("toast");
+
+
+    /* =========================
+       MOTIVATION
+    ========================= */
+
+    const motivations = [
+      "Mantap, lanjut lorong berikutnya! 💪",
+      "Satu lorong beres! 🔥",
+      "Gas terus, tinggal sedikit lagi! 🚀",
+      "Nice! Kerjaan Hampir beres 😎",
+      "Santai tapi konsisten 💙",
+      "Good job! Lanjutkan! ✨",
+      "Satu langkah lebih dekat! 💪"
+    ];
+
+    function randomMotivation() {
+      return motivations[
+        Math.floor(Math.random() * motivations.length)
+      ];
+    }
+
+
+    /* =========================
+       FORMAT TIME
+    ========================= */
+
+    function formatTime(seconds) {
+      seconds = Math.max(0, Math.ceil(seconds));
+
+      const minutes =
+        Math.floor(seconds / 60);
+
+      const secs =
+        seconds % 60;
+
+      return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(secs).padStart(2, "0")
+      );
+    }
+
+
+    /* =========================
+       RENDER LORONG
+    ========================= */
+
+    function renderLorongs() {
+
+      lorongList.innerHTML = "";
+
+      const completed =
+        lorongs.filter(l => l.done).length;
+
+      progressCount.textContent =
+        `${completed}/${TOTAL_LORONG}`;
+
+      progressFill.style.width =
+        `${(completed / TOTAL_LORONG) * 100}%`;
+
+
+      lorongs.forEach((lorong, index) => {
+
+        const unlocked =
+          index === 0 ||
+          lorongs[index - 1].done;
+
+        const card =
+          document.createElement("div");
+
+        card.className = "lorong-card";
+
+        if (unlocked && !lorong.done) {
+          card.classList.add("active");
+        }
+
+        if (!unlocked) {
+          card.classList.add("locked");
+        }
+
+        if (lorong.done) {
+          card.classList.add("done");
+        }
+
+
+        let statusText = "TERKUNCI";
+        let statusClass = "locked";
+
+        if (lorong.done) {
+          statusText = "SELESAI";
+          statusClass = "done";
+        } else if (unlocked) {
+          statusText = "SIAP";
+          statusClass = "";
+        }
+
+
+        const qty =
+          Number(lorong.qty) || 0;
+
+        const estimatedSeconds =
+          qty * SECONDS_PER_PCS;
+
+
+        card.innerHTML = `
+          <div class="lorong-header">
+
+            <div class="lorong-name">
+              Lorong ${index + 1}
+            </div>
+
+            <div class="status ${statusClass}">
+              ${statusText}
+            </div>
+
+          </div>
+
+          <div class="input-row">
+
+            <input
+              class="qty-input"
+              type="number"
+              min="1"
+              inputmode="numeric"
+              placeholder="Jumlah Qty"
+              value="${lorong.qty}"
+              ${(!unlocked || lorong.done) ? "disabled" : ""}
+            >
+
+            <button
+  class="start-btn"
+  ${(!unlocked || lorong.done || qty <= 0) ? "disabled" : ""}
+>
+  ${lorong.done ? "—" : "MULAI"}
+</button>
+
+          </div>
+
+          <div class="estimate">
+            Estimasi:
+            <strong>
+              ${qty > 0 ? formatTime(estimatedSeconds) : "--:--"}
+            </strong>
+          </div>
+        `;
+
+
+        const input =
+          card.querySelector(".qty-input");
+
+        const startButton =
+          card.querySelector(".start-btn");
+
+
+        input.addEventListener("input", () => {
+
+          lorong.qty =
+            input.value.replace(/[^0-9]/g, "");
+
+          const currentQty =
+            Number(input.value) || 0;
+
+          const estimate =
+            card.querySelector(".estimate strong");
+
+          estimate.textContent =
+            currentQty > 0
+              ? formatTime(currentQty * SECONDS_PER_PCS)
+              : "--:--";
+
+          startButton.disabled =
+            currentQty <= 0;
+
+        });
+
+
+        input.addEventListener("keydown", (e) => {
+
+          if (e.key === "Enter") {
+
+            e.preventDefault();
+
+            const currentQty =
+              Number(input.value);
+
+            if (
+              unlocked &&
+              !lorong.done &&
+              currentQty > 0
+            ) {
+              startTimer(index);
+            }
+          }
+
+        });
+
+
+        startButton.addEventListener(
+          "click",
+          () => {
+
+            const currentQty =
+              Number(input.value);
+
+            if (currentQty > 0) {
+              startTimer(index);
+            }
+
+          }
+        );
+
+
+        lorongList.appendChild(card);
+
+      });
+
+    }
+
+
+    /* =========================
+       START TIMER
+    ========================= */
+
+    function startTimer(index) {
+
+      const qty =
+        Number(lorongs[index].qty);
+
+      if (!qty || qty <= 0) {
+        return;
+      }
+
+
+      activeLorong = index;
+
+      totalTimerSeconds =
+        qty * SECONDS_PER_PCS;
+
+      remainingSeconds =
+        totalTimerSeconds;
+
+      pauseRemaining = 0;
+      paused = false;
+
+      lastWarningSecond = null;
+
+
+      timerLorong.textContent =
+        `Lorong ${index + 1}`;
+
+      timerQty.textContent =
+        `${qty} Pcs`;
+
+      pauseBtn.textContent =
+        "Pause";
+
+      pauseBtn.style.display =
+        "block";
+
+      doneBtn.style.display =
+        "none";
+
+
+      countdown.classList.remove(
+        "warning-orange",
+        "warning-red"
+      );
+
+      timerProgressFill.classList.remove(
+        "warning-orange",
+        "warning-red"
+      );
+
+
+      timerOverlay.classList.add("show");
+
+      document.body.style.overflow =
+        "hidden";
+
+
+      updateTimerDisplay();
+
+      startRealTimer();
+
+      requestWakeLock();
+
+    }
+
+
+    /* =========================
+       REAL TIMER
+    ========================= */
+
+    function startRealTimer() {
+
+      clearInterval(timer);
+
+      endTimestamp =
+        Date.now() +
+        remainingSeconds * 1000;
+
+
+      timer = setInterval(() => {
+
+        if (paused) {
+          return;
+        }
+
+
+        const diff =
+          endTimestamp - Date.now();
+
+        remainingSeconds =
+          Math.max(0, diff / 1000);
+
+
+        updateTimerDisplay();
+
+
+        if (remainingSeconds <= 0) {
+
+          timerFinished();
+
+        }
+
+      }, 100);
+
+    }
+
+
+    /* =========================
+       UPDATE TIMER DISPLAY
+    ========================= */
+
+    function updateTimerDisplay() {
+
+      countdown.textContent =
+        formatTime(remainingSeconds);
+
+
+      const percentage =
+        totalTimerSeconds > 0
+          ? (remainingSeconds / totalTimerSeconds) * 100
+          : 0;
+
+      timerProgressFill.style.width =
+        `${percentage}%`;
+
+
+      countdown.classList.remove(
+        "warning-orange",
+        "warning-red"
+      );
+
+      timerProgressFill.classList.remove(
+        "warning-orange",
+        "warning-red"
+      );
+
+
+      if (remainingSeconds <= 5) {
+
+        countdown.classList.add(
+          "warning-red"
+        );
+
+        timerProgressFill.classList.add(
+          "warning-red"
+        );
+
+      } else if (remainingSeconds <= 10) {
+
+        countdown.classList.add(
+          "warning-orange"
+        );
+
+        timerProgressFill.classList.add(
+          "warning-orange"
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       PAUSE / RESUME
+    ========================= */
+
+    pauseBtn.addEventListener(
+      "click",
+      () => {
+
+        if (!paused) {
+
+          paused = true;
+
+          pauseRemaining =
+            remainingSeconds;
+
+          clearInterval(timer);
+
+          pauseBtn.textContent =
+            "Lanjutkan";
+
+        } else {
+
+          paused = false;
+
+          remainingSeconds =
+            pauseRemaining;
+
+          pauseBtn.textContent =
+            "Pause";
+
+          startRealTimer();
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       TIMER FINISHED
+    ========================= */
+
+    function timerFinished() {
+
+      clearInterval(timer);
+
+      timer = null;
+
+      remainingSeconds = 0;
+
+      countdown.textContent =
+        "00:00";
+
+
+      countdown.classList.remove(
+        "warning-orange"
+      );
+
+      countdown.classList.add(
+        "warning-red"
+      );
+
+
+      timerProgressFill.style.width =
+        "0%";
+
+      timerProgressFill.classList.remove(
+        "warning-orange"
+      );
+
+      timerProgressFill.classList.add(
+        "warning-red"
+      );
+
+
+      pauseBtn.style.display =
+        "none";
+
+      doneBtn.style.display =
+        "block";
+
+
+      playElegantAlarm();
+
+      vibrate([120, 80, 120]);
+
+    }
+
+
+    /* =========================
+       DONE
+    ========================= */
+
+    doneBtn.addEventListener(
+      "click",
+      () => {
+
+        if (activeLorong === null) {
+          return;
+        }
+
+
+        lorongs[activeLorong].done =
+          true;
+
+
+        const finishedIndex =
+          activeLorong;
+
+
+        closeTimer();
+
+        renderLorongs();
+
+        showToast(
+          randomMotivation()
+        );
+
+
+        const completed =
+          lorongs.filter(
+            l => l.done
+          ).length;
+
+
+        if (
+          completed === TOTAL_LORONG
+        ) {
+
+          setTimeout(() => {
+
+            finishMessage.textContent =
+              randomMotivation();
+
+            finishScreen.classList.add(
+              "show"
+            );
+
+          }, 350);
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       CLOSE TIMER
+    ========================= */
+
+    function closeTimer() {
+
+      clearInterval(timer);
+
+      timer = null;
+
+      activeLorong = null;
+
+      paused = false;
+
+      timerOverlay.classList.remove(
+        "show"
+      );
+
+      document.body.style.overflow =
+        "";
+
+      countdown.classList.remove(
+        "warning-orange",
+        "warning-red"
+      );
+
+      timerProgressFill.classList.remove(
+        "warning-orange",
+        "warning-red"
+      );
+
+    }
+
+
+    /* =========================
+       TOAST
+    ========================= */
+
+    let toastTimeout = null;
+
+    function showToast(message) {
+
+      toast.textContent =
+        message;
+
+      toast.classList.add("show");
+
+
+      clearTimeout(toastTimeout);
+
+
+      toastTimeout =
+        setTimeout(() => {
+
+          toast.classList.remove(
+            "show"
+          );
+
+        }, 2300);
+
+    }
+
+
+    /* =========================
+       VIBRATION
+    ========================= */
+
+    function vibrate(pattern) {
+
+      if (
+        "vibrate" in navigator
+      ) {
+
+        try {
+          navigator.vibrate(pattern);
+        } catch (error) {
+          // Vibration tidak didukung
+        }
+
+      }
+
+    }
+
+
+    /* =========================
+       WEB AUDIO
+    ========================= */
+
+    let audioContext = null;
+
+    function getAudioContext() {
+
+      if (!audioContext) {
+
+        const AudioContext =
+          window.AudioContext ||
+          window.webkitAudioContext;
+
+        if (!AudioContext) {
+          return null;
+        }
+
+        audioContext =
+          new AudioContext();
+
+      }
+
+
+      if (
+        audioContext.state ===
+        "suspended"
+      ) {
+
+        audioContext.resume();
+
+      }
+
+
+      return audioContext;
+
+    }
+
+
+    function playTone(
+      frequency,
+      duration,
+      volume = 0.035
+    ) {
+
+      const ctx =
+        getAudioContext();
+
+      if (!ctx) {
+        return;
+      }
+
+
+      const oscillator =
+        ctx.createOscillator();
+
+      const gain =
+        ctx.createGain();
+
+
+      oscillator.type =
+        "sine";
+
+      oscillator.frequency.value =
+        frequency;
+
+
+      gain.gain.setValueAtTime(
+        0,
+        ctx.currentTime
+      );
+
+      gain.gain.linearRampToValueAtTime(
+        volume,
+        ctx.currentTime + 0.02
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        ctx.currentTime + duration
+      );
+
+
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+
+
+      oscillator.start();
+
+      oscillator.stop(
+        ctx.currentTime + duration
+      );
+
+    }
+
+
+    /* =========================
+       WARNING SOUND
+    ========================= */
+
+    function playWarningSound() {
+
+      playTone(
+        660,
+        0.10,
+        0.4
+      );
+
+    }
+
+
+    /* =========================
+       ELEGANT ALARM
+    ========================= */
+
+    function playElegantAlarm() {
+
+  for (let i = 0; i < 3; i++) {
+
+    const offset = i * 580;
+
+    setTimeout(() => {
+      playTone(523, 0.20, 1);
+    }, offset);
+
+    setTimeout(() => {
+      playTone(659, 0.20, 1);
+    }, offset + 160);
+
+    setTimeout(() => {
+      playTone(784, 0.30, 1);
+    }, offset + 320);
+
+  }
+
+}
+
+
+    /* =========================
+       10 SECOND WARNING
+    ========================= */
+
+    setInterval(() => {
+
+      if (
+        activeLorong === null ||
+        paused ||
+        remainingSeconds <= 0 ||
+        remainingSeconds > 5
+      ) {
+        return;
+      }
+
+
+      const currentSecond =
+        Math.ceil(remainingSeconds);
+
+
+      if (
+        currentSecond !==
+        lastWarningSecond
+      ) {
+
+        lastWarningSecond =
+          currentSecond;
+
+
+        playWarningSound();
+
+        vibrate(45);
+
+      }
+
+    }, 100);
+
+
+    /* =========================
+       WAKE LOCK
+    ========================= */
+
+    async function requestWakeLock() {
+
+      if (
+        !("wakeLock" in navigator)
+      ) {
+        return;
+      }
+
+
+      try {
+
+        wakeLock =
+          await navigator.wakeLock.request(
+            "screen"
+          );
+
+      } catch (error) {
+        // Wake Lock tidak tersedia
+      }
+
+    }
+
+
+    /* =========================
+       NEW SESSION
+    ========================= */
+
+    newSessionBtn.addEventListener(
+      "click",
+      () => {
+
+        clearInterval(timer);
+
+        timer = null;
+
+        activeLorong = null;
+
+        remainingSeconds = 0;
+
+        totalTimerSeconds = 0;
+
+        paused = false;
+
+        pauseRemaining = 0;
+
+        lastWarningSecond = null;
+
+
+        lorongs.forEach(
+          lorong => {
+
+            lorong.qty = "";
+            lorong.done = false;
+
+          }
+        );
+
+
+        finishScreen.classList.remove(
+          "show"
+        );
+
+        timerOverlay.classList.remove(
+          "show"
+        );
+
+        document.body.style.overflow =
+          "";
+
+
+        renderLorongs();
+
+      }
+    );
+
+
+    /* =========================
+       INITIAL RENDER
+    ========================= */
+
+    renderLorongs();
+    
+    const themeBtn = document.getElementById("themeBtn");
+
+themeBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+
+  if (document.body.classList.contains("dark")) {
+    themeBtn.textContent = "☀️";
+  } else {
+    themeBtn.textContent = "🌙";
+  }
+});
+
+  </script>
+
+</body>
+</html>
