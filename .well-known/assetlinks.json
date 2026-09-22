@@ -1,1 +1,14 @@
-
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.bayurofc2_lab.twa",
+      "sha256_cert_fingerprints": [
+        "13:FA:4E:6D:D6:E3:78:9D:FB:4D:EC:39:FE:FC:DD:AE:DD:6E:CF:95:BC:B1:F2:0B:20:0A:A1:D1:D2:86:58:36"
+      ]
+    }
+  }
+]
