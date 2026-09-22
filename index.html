@@ -1796,7 +1796,11 @@ themeBtn.addEventListener("click", () => {
     themeBtn.textContent = "🌙";
   }
 });
-
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js");
+  });
+}
   </script>
 
 </body>
