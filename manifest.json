@@ -1,9 +1,9 @@
 {
-  "id": "/MaxDis-Timer/",
-  "name": "MaxDis Timer",
+  "id": "maxdtime",
+  "name": "MaxDisT",
   "short_name": "MaxDis Timer",
-  "description": "Timer MaxDisplay untuk pekerjaan toko",
-  "start_url": "./index.html",
+  "description": "MaxDis",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f5f7fa",
   "theme_color": "#168de2",
